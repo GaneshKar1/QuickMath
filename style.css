@@ -11,7 +11,8 @@
   --bg-darkest: #000000;
   --bg-sidebar: #060606;
   
-  --primary-solid: #ff3333;     /* Glowing red indicator lines */
+  --primary-accent: #ff3333;     /* Dynamic primary accent */
+  --primary-solid: var(--primary-accent); /* Cascading solid highlight color */
   --maroon-solid: #4a1515;      /* Solid maroon buy buttons */
   --maroon-border: #7a2222;
   --maroon-hover: #5c1d1d;
@@ -296,7 +297,7 @@ body {
 
 .btn:hover {
   background: var(--maroon-hover);
-  box-shadow: 0 0 8px rgba(255, 51, 51, 0.2);
+  box-shadow: 0 0 8px var(--primary-accent);
 }
 
 .btn-secondary {
