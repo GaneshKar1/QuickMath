@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickMath // Quant Interview Prep</title>
+  
+  <!-- Google Fonts for Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- background ambient glow -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <div class="miniplayer-container">
+      <!-- ================= MAIN MENU SCREEN ================= -->
+      <section id="menu-screen" class="view-panel active">
+        <header class="app-header">
+          <div class="logo-area">
+            <img src="logo.png" alt="QuickMath Logo" class="logo-icon">
+            <h1 class="logo-text">Quick<span>Math</span></h1>
+          </div>
+          <p class="subtitle">Quant Mental Arithmetic Trainer</p>
+        </header>
+
+        <main class="menu-content">
+          <!-- Operations Configuration -->
+          <div class="config-group">
+            <h2 class="group-label">1. Practice Focus</h2>
+            <div class="checkbox-grid">
+              <label class="config-card checkbox-card" id="label-arithmetic">
+                <input type="checkbox" id="opt-arithmetic" checked>
+                <div class="card-inner">
+                  <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg>
+                  </div>
+                  <div class="card-text">
+                    <span class="title">Arithmetic</span>
+                    <span class="desc">Addition, Subtraction, & Division</span>
+                  </div>
+                </div>
+              </label>
+
+              <label class="config-card checkbox-card" id="label-multiplication">
+                <input type="checkbox" id="opt-multiplication" checked>
+                <div class="card-inner">
+                  <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                  </div>
+                  <div class="card-text">
+                    <span class="title">Multiplication</span>
+                    <span class="desc">Speed Double-Digit (12 × 12 - 99 × 99)</span>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div id="config-error" class="validation-message hidden">Please select at least one operation type.</div>
+          </div>
+
+          <!-- Answer Input Mode -->
+          <div class="config-group">
+            <h2 class="group-label">2. Input Mechanics</h2>
+            <div class="radio-toggle-group">
+              <label class="toggle-option">
+                <input type="radio" name="answer-mode" value="multiple-choice" checked>
+                <span class="toggle-slider-label">Multiple Choice</span>
+              </label>
+              <label class="toggle-option">
+                <input type="radio" name="answer-mode" value="fill-blank">
+                <span class="toggle-slider-label">Fill-in-the-Blank</span>
+              </label>
+              <div class="toggle-slider-back"></div>
+            </div>
+          </div>
+
+          <!-- Time Limit Control -->
+          <div class="config-group">
+            <h2 class="group-label">3. Time Pressure</h2>
+            <div class="timer-options">
+              <label class="timer-pill">
+                <input type="radio" name="time-limit" value="none">
+                <span class="pill-label">No Timer</span>
+              </label>
+              <label class="timer-pill">
+                <input type="radio" name="time-limit" value="8" checked>
+                <span class="pill-label">8 Seconds</span>
+              </label>
+              <label class="timer-pill">
+                <input type="radio" name="time-limit" value="5">
+                <span class="pill-label">5 Seconds</span>
+              </label>
+              <label class="timer-pill">
+                <input type="radio" name="time-limit" value="3">
+                <span class="pill-label">3 Seconds</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Play Action Buttons -->
+          <div class="action-buttons">
+            <button id="start-btn" class="btn btn-primary">
+              <span>Start Session</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <button id="exit-btn" class="btn btn-secondary">
+              <span>Exit</span>
+            </button>
+          </div>
+        </main>
+
+        <!-- Dynamic High Stats Panel -->
+        <footer class="menu-stats">
+          <div class="stat-card">
+            <div class="stat-icon val-score">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="stat-meta">
+              <span class="label">Personal Best</span>
+              <span id="best-score" class="value">0</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon val-streak">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            </div>
+            <div class="stat-meta">
+              <span class="label">Max Streak</span>
+              <span id="best-streak" class="value">0</span>
+            </div>
+          </div>
+        </footer>
+      </section>
+
+      <!-- ================= GAMEPLAY MINIPLAYER VIEW ================= -->
+      <section id="game-screen" class="view-panel">
+        <!-- HUD Header -->
+        <header class="game-hud">
+          <button id="quit-btn" class="icon-btn-secondary" title="Exit to Main Menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+
+          <div class="hud-stats-group">
+            <div class="hud-stat-item score-pill">
+              <span class="hud-label">Score</span>
+              <span id="hud-score" class="hud-val">00</span>
+            </div>
+            
+            <div class="hud-stat-item streak-pill" id="streak-indicator">
+              <svg class="streak-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
+              <span class="hud-label">Streak</span>
+              <span id="hud-streak" class="hud-val">0</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Time Tracker Bar (Horizontal Ring-Alternative) -->
+        <div class="timer-bar-container" id="timer-container">
+          <div id="timer-bar" class="timer-bar-fill"></div>
+        </div>
+
+        <!-- Problem Core Card -->
+        <div class="question-container" id="question-card">
+          <div class="question-display" id="question-text">-- × --</div>
+        </div>
+
+        <!-- Multiple Choice Mode Layout -->
+        <div id="mc-container" class="choices-container active">
+          <button class="choice-btn" data-index="0">
+            <span class="choice-key">1</span>
+            <span class="choice-value">--</span>
+          </button>
+          <button class="choice-btn" data-index="1">
+            <span class="choice-key">2</span>
+            <span class="choice-value">--</span>
+          </button>
+          <button class="choice-btn" data-index="2">
+            <span class="choice-key">3</span>
+            <span class="choice-value">--</span>
+          </button>
+          <button class="choice-btn" data-index="3">
+            <span class="choice-key">4</span>
+            <span class="choice-value">--</span>
+          </button>
+        </div>
+
+        <!-- Fill-in-the-Blank Mode Layout -->
+        <div id="fib-container" class="input-answer-container">
+          <form id="fib-form" autocomplete="off" onsubmit="return false;">
+            <div class="fib-field-wrap">
+              <input type="number" step="any" id="fib-input" placeholder="Type answer..." required>
+              <div class="input-focus-glow"></div>
+            </div>
+            <button id="fib-submit-btn" type="submit" class="btn btn-primary btn-icon-only">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ================= SESSION SUMMARY / GAME OVER SCREEN ================= -->
+      <section id="summary-screen" class="view-panel">
+        <header class="summary-header">
+          <div class="complete-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+          </div>
+          <h1 class="summary-title">Session Complete</h1>
+          <p id="summary-reason" class="summary-subtitle">Practice makes perfect</p>
+        </header>
+
+        <main class="summary-stats">
+          <div class="score-card-hero">
+            <span class="hero-label">Final Score</span>
+            <span id="final-score" class="hero-val">00</span>
+          </div>
+
+          <div class="stats-mini-grid">
+            <div class="mini-card">
+              <span class="mini-label">Streak Reached</span>
+              <span id="final-streak" class="mini-val">0</span>
+            </div>
+            <div class="mini-card">
+              <span class="mini-label">Accuracy</span>
+              <span id="final-accuracy" class="mini-val">0%</span>
+            </div>
+          </div>
+
+          <!-- Question Review Section (Helpful for Quant Interview Prep) -->
+          <div class="missed-problem-box" id="missed-review-container">
+            <h3 class="box-title">Incorrect Answer Review</h3>
+            <div class="missed-problem-details">
+              <div class="detail-row">
+                <span class="label">Question:</span>
+                <span id="review-question" class="val text-mono">48 × 16</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Your Answer:</span>
+                <span id="review-user-answer" class="val val-wrong text-mono">756</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Correct Answer:</span>
+                <span id="review-correct-answer" class="val val-correct text-mono">768</span>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <footer class="summary-actions">
+          <button id="restart-btn" class="btn btn-primary">
+            <span>Play Again</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          </button>
+          <button id="menu-btn" class="btn btn-secondary">
+            <span>Main Menu</span>
+          </button>
+        </footer>
+      </section>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

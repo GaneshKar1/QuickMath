@@ -1,0 +1,7 @@
+# Compiled build outputs
+bin/
+obj/
+
+# Local app data profiles
+QuickMath_Data/
+*.user
