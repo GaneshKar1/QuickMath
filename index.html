@@ -201,20 +201,59 @@
               <!-- Row 1 -->
               <div class="tip-row">
                 <div class="tip-title">ROW 1: Left-to-Right Execution (Speed Addition)</div>
-                <div class="tip-concept"><strong>Concept:</strong> Do not calculate right-to-left. Process the highest place values first.</div>
-                <div class="tip-example"><strong>Example:</strong> 674 + 258 -> <strong>600+200=800</strong> -> <strong>800+70+50=920</strong> -> <strong>920+4+8=932</strong>.</div>
+                <div class="tip-concept">
+                  <strong>Concept:</strong> Standard right-to-left addition is slow because you must hold temporary carry values in your head while waiting to write down final digits. Moving left-to-right aligns calculation with natural reading. You partition integers into place value groups and increment a single running register.
+                </div>
+                <div class="tip-workflow">
+                  <strong>Methodology:</strong><br>
+                  1. Sum the hundreds-place digits first and establish your base running total.<br>
+                  2. Add the sum of the tens-place digits to your running total.<br>
+                  3. Add the units-place digits to complete the calculation.
+                </div>
+                <div class="tip-example">
+                  <strong>Step-by-Step Mental Assembly [674 + 258]:</strong><br>
+                  • Step 1 (Hundreds): <code>600 + 200 = 800</code> &nbsp;→&nbsp; Running Total = <strong>800</strong><br>
+                  • Step 2 (Tens): <code>70 + 50 = 120</code> &nbsp;→&nbsp; Add to total: <code>800 + 120 = 920</code> &nbsp;→&nbsp; Running Total = <strong>920</strong><br>
+                  • Step 3 (Units): <code>4 + 8 = 12</code> &nbsp;→&nbsp; Add to total: <code>920 + 12 = 932</code> &nbsp;→&nbsp; Final Result = <strong>932</strong>
+                </div>
               </div>
+
               <!-- Row 2 -->
               <div class="tip-row">
-                <div class="tip-title">ROW 2: Reciprocal Doubling (Division by 5/25)</div>
-                <div class="tip-concept"><strong>Concept:</strong> To divide by 5, multiply the value by 2 and shift the decimal point 1 place to the left.</div>
-                <div class="tip-example"><strong>Example:</strong> 315 / 5 -> <strong>(315 * 2) / 10</strong> -> <strong>630 / 10 = 63</strong>.</div>
+                <div class="tip-title">ROW 2: Reciprocal Doubling (Division by 5 & 25)</div>
+                <div class="tip-concept">
+                  <strong>Concept:</strong> Direct mental division by non-even integers creates substantial friction. Fractions allow you to convert complex division into rapid, precise multiplication. Dividing by 5 is equivalent to multiplying by 2 and dividing by 10. Dividing by 25 is equivalent to multiplying by 4 and dividing by 100.
+                </div>
+                <div class="tip-workflow">
+                  <strong>Methodology:</strong><br>
+                  • <strong>For Division by 5:</strong> Double the value, then shift the decimal point 1 place to the left.<br>
+                  • <strong>For Division by 25:</strong> Quadruple the value (double it twice), then shift the decimal point 2 places to the left.
+                </div>
+                <div class="tip-example">
+                  <strong>Step-by-Step Mental Assembly:</strong><br>
+                  • <strong>Case 1 [315 / 5]:</strong> Double numerator: <code>315 * 2 = 630</code> &nbsp;→&nbsp; Shift decimal: <code>630 / 10 = 63.0</code> &nbsp;→&nbsp; Result = <strong>63</strong><br>
+                  • <strong>Case 2 [124 / 25]:</strong> Quadruple numerator: <code>124 * 4 = 496</code> &nbsp;→&nbsp; Shift decimal: <code>496 / 100 = 4.96</code> &nbsp;→&nbsp; Result = <strong>4.96</strong>
+                </div>
               </div>
+
               <!-- Row 3 -->
               <div class="tip-row">
                 <div class="tip-title">ROW 3: Constant Difference (No-Borrow Subtraction)</div>
-                <div class="tip-concept"><strong>Concept:</strong> Add/subtract identical values to both integers to make the subtrahend a multiple of 10.</div>
-                <div class="tip-example"><strong>Example:</strong> 83 - 47 -> Add 3 to both -> <strong>86 - 50 = 36</strong>.</div>
+                <div class="tip-concept">
+                  <strong>Concept:</strong> "Borrowing" during subtraction (e.g., subtracting 7 from a unit of 3) causes massive cognitive load. Subtraction is simply finding the distance between two numbers on a number line. If you add or subtract the exact same constant to both numbers, the distance (difference) between them remains perfectly unchanged.
+                </div>
+                <div class="tip-workflow">
+                  <strong>Methodology:</strong><br>
+                  1. Find the offset required to round the second number (subtrahend) up to the nearest multiple of 10.<br>
+                  2. Add that exact same offset to the first number (minuend) to keep the distance identical.<br>
+                  3. Subtract the adjusted numbers. No borrowing will be required.
+                </div>
+                <div class="tip-example">
+                  <strong>Step-by-Step Mental Assembly [83 - 47]:</strong><br>
+                  • Step 1: Subtrahend is <code>47</code>. Closest base is <code>50</code> (Offset = <strong>+3</strong>)<br>
+                  • Step 2: Apply to minuend: <code>83 + 3 = 86</code> &nbsp;→&nbsp; New calculation = <code>86 - 50</code><br>
+                  • Step 3: Perform subtraction: <code>86 - 50 = 36</code> &nbsp;→&nbsp; Final Result = <strong>36</strong>
+                </div>
               </div>
             </div>
 
@@ -223,21 +262,65 @@
               <!-- Row 1 -->
               <div class="tip-row">
                 <div class="tip-title">ROW 1: The Crisscross Method (2x2 Multiplications)</div>
-                <div class="tip-concept"><strong>Concept:</strong> Single-line execution for AB * CD.</div>
-                <div class="tip-steps"><strong>Steps:</strong> 1. Units (B*D) | 2. Cross-Sum (A*D + B*C) | 3. Tens (A*C). Carry over values sequentially.</div>
-                <div class="tip-example"><strong>Example:</strong> 23 * 45 -> <strong>(3*5=15, keep 5, carry 1)</strong> -> <strong>(2*5 + 3*4 + 1 = 23, keep 3, carry 2)</strong> -> <strong>(2*4 + 2 = 10)</strong> -> Total: <strong>1035</strong>.</div>
+                <div class="tip-concept">
+                  <strong>Concept:</strong> Multiplying two-digit numbers AB * CD normally requires multiple lines of partial products. The crisscross method compresses this into a single-line register by processing right units, inner/outer diagonals, and left tens sequentially while carrying numbers in your head.
+                </div>
+                <div class="tip-workflow">
+                  <strong>Methodology [AB * CD]:</strong><br>
+                  1. <strong>Right Column:</strong> Multiply right digits: <code>B * D</code>. Keep unit, carry tens value.<br>
+                  2. <strong>Inner Diagonals:</strong> Cross-multiply and sum: <code>(A * D) + (B * C) + Carry</code>. Keep unit, carry tens value.<br>
+                  3. <strong>Left Column:</strong> Multiply left digits: <code>(A * C) + Carry</code>. Append to front of the result.
+                </div>
+                <div class="tip-example">
+                  <strong>Step-by-Step Mental Assembly [23 * 45]:</strong> (A=2, B=3, C=4, D=5)<br>
+                  • Step 1 (Units): <code>3 * 5 = 15</code> &nbsp;→&nbsp; Keep <strong>5</strong>, Carry <strong>1</strong><br>
+                  • Step 2 (Cross): <code>(2*5) + (3*4) = 10 + 12 = 22</code> &nbsp;→&nbsp; Add carry: <code>22 + 1 = 23</code> &nbsp;→&nbsp; Keep <strong>3</strong>, Carry <strong>2</strong><br>
+                  • Step 3 (Tens): <code>2 * 4 = 8</code> &nbsp;→&nbsp; Add carry: <code>8 + 2 = 10</code> &nbsp;→&nbsp; Keep <strong>10</strong><br>
+                  • Step 4 (Assembly): Left (10), Middle (3), Right (5) &nbsp;→&nbsp; Final Result = <strong>1035</strong>
+                </div>
               </div>
+
               <!-- Row 2 -->
               <div class="tip-row">
                 <div class="tip-title">ROW 2: Difference of Squares</div>
-                <div class="tip-concept"><strong>Concept:</strong> For numbers balancing equidistant from a round base, apply: (x-y)(x+y) = x^2 - y^2.</div>
-                <div class="tip-example"><strong>Example:</strong> 43 * 37 -> <strong>(40 + 3)(40 - 3)</strong> -> <strong>40^2 - 3^2</strong> -> <strong>1600 - 9 = 1591</strong>.</div>
+                <div class="tip-concept">
+                  <strong>Concept:</strong> When multiplying two numbers, check if they are equidistant from a clean round midpoint. If so, they can be rewritten in the algebraic form <code>(x - y)(x + y)</code>, which expands directly to <code>x² - y²</code>. This bypasses long multiplication, turning the problem into a simple squaring and a subtraction.
+                </div>
+                <div class="tip-workflow">
+                  <strong>Methodology:</strong><br>
+                  1. Find the exact midpoint of the two numbers. This is your base number <code>x</code>.<br>
+                  2. Find the distance from the midpoint to either number. This is your offset <code>y</code>.<br>
+                  3. Square both numbers: calculate <code>x²</code> and <code>y²</code>.<br>
+                  4. Subtract <code>y²</code> from <code>x²</code> to get the result.
+                </div>
+                <div class="tip-example">
+                  <strong>Step-by-Step Mental Assembly [43 * 37]:</strong><br>
+                  • Step 1 (Midpoint): <code>(43 + 37) / 2 = 40</code> &nbsp;→&nbsp; Base <code>x = 40</code><br>
+                  • Step 2 (Offset): <code>43 - 40 = 3</code> &nbsp;→&nbsp; Offset <code>y = 3</code><br>
+                  • Step 3 (Squares): Base square: <code>40 * 40 = 1600</code> &nbsp;→&nbsp; Offset square: <code>3 * 3 = 9</code><br>
+                  • Step 4 (Subtraction): <code>1600 - 9 = 1591</code> &nbsp;→&nbsp; Final Result = <strong>1591</strong>
+                </div>
               </div>
+
               <!-- Row 3 -->
               <div class="tip-row">
                 <div class="tip-title">ROW 3: Squaring Base-5 Numbers</div>
-                <div class="tip-concept"><strong>Concept:</strong> Any number ending in 5 squared (A5 * A5) always ends in 25. The prefix is A * (A + 1).</div>
-                <div class="tip-example"><strong>Example:</strong> 75 * 75 -> Prefix = <strong>7 * 8 = 56</strong> -> Appended result = <strong>5625</strong>.</div>
+                <div class="tip-concept">
+                  <strong>Concept:</strong> Squaring any number ending in 5 (e.g. A5 * A5) follows a absolute algebraic pattern: <code>(10A + 5)² = 100A(A + 1) + 25</code>. Because of this, the last two digits of the squared number are *always* <strong>25</strong>, and the preceding prefix digits are always calculated by multiplying the prefix digit by its consecutive integer.
+                </div>
+                <div class="tip-workflow">
+                  <strong>Methodology:</strong><br>
+                  1. Extract the prefix digit(s) preceding the 5. This is your prefix value <code>A</code>.<br>
+                  2. Multiply <code>A</code> by its consecutive integer <code>(A + 1)</code>.<br>
+                  3. Append <code>25</code> directly to the right side of the product.
+                </div>
+                <div class="tip-example">
+                  <strong>Step-by-Step Mental Assembly [75 * 75]:</strong><br>
+                  • Step 1 (Prefix): Prefix preceding the 5 is <code>7</code> &nbsp;→&nbsp; Base <code>A = 7</code><br>
+                  • Step 2 (Multiply): Multiply by consecutive integer: <code>7 * (7 + 1) = 7 * 8 = 56</code><br>
+                  • Step 3 (Append): Place 25 to the right of 56 &nbsp;→&nbsp; Final Result = <strong>5625</strong><br>
+                  • <em>Example 2 [115 * 115]:</em> Prefix <code>11 * 12 = 132</code> &nbsp;→&nbsp; Append 25 &nbsp;→&nbsp; Result = <strong>13225</strong>
+                </div>
               </div>
             </div>
           </div>
