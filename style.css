@@ -16,9 +16,10 @@
    ========================================================================== */
 
 :root {
-  --font-primary: 'Courier New', Courier, monospace;
-  --font-display: 'Courier New', Courier, monospace;
-  --font-mono: 'Courier New', Courier, monospace;
+  --font-family: 'Courier New', Courier, monospace;
+  --font-primary: var(--font-family);
+  --font-display: var(--font-family);
+  --font-mono: var(--font-family);
 
   /* Antimatter Dimensions Dark Maroon Palette */
   --bg-darkest: #000000;
