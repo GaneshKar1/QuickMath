@@ -23,6 +23,7 @@
       <div class="sidebar-tabs">
         <button class="tab-btn active" id="tab-arithmetic">ARITHMETIC</button>
         <button class="tab-btn" id="tab-multiplication">MULTIPLICATION</button>
+        <button class="tab-btn" id="tab-options">OPTIONS</button>
         <button class="tab-btn" id="tab-stats">STATISTICS</button>
         <button class="tab-btn" id="tab-exit">EXIT</button>
       </div>
@@ -94,19 +95,84 @@
             </button>
           </div>
         </div>
+      </section>
 
-        <!-- Dynamic High Stats Panel -->
-        <footer class="menu-stats" id="stats-panel-anchor">
-          <h2 class="group-label full-width">SYSTEM PERFORMANCE STATISTICS</h2>
-          <div class="stat-card">
+      <!-- ================= OPTIONS & CUSTOMIZATION SCREEN ================= -->
+      <section id="options-screen" class="view-panel">
+        <header class="app-header">
+          <h2 class="main-title">OPTIONS & CUSTOMIZATION</h2>
+          <p class="subtitle">CONFIGURE THEME PRESETS AND MONOSPACE TYPOGRAPHY</p>
+        </header>
+
+        <div class="menu-content">
+          <!-- Theme Presets Matrix -->
+          <div class="config-group">
+            <h2 class="group-label">THEME PRESETS</h2>
+            <div class="dense-toggle-row four-cols">
+              <button class="tab-btn" id="btn-theme-default">DEFAULT DARK</button>
+              <button class="tab-btn" id="btn-theme-zetamac">ZETAMAC LIGHT</button>
+              <button class="tab-btn" id="btn-theme-matrix">MATRIX GREEN</button>
+              <button class="tab-btn" id="btn-theme-slate">SLATE PRO</button>
+            </div>
+          </div>
+
+          <!-- Fine-Grained Customization Pickers -->
+          <div class="config-group">
+            <h2 class="group-label">FINE-GRAINED CUSTOM COLORS</h2>
+            <div class="custom-pickers-row">
+              <div class="picker-cell">
+                <span class="picker-label">CUSTOM BACKGROUND:</span>
+                <div class="picker-wrap">
+                  <input type="color" id="picker-bg" class="flat-color-picker" value="#000000">
+                </div>
+              </div>
+              <div class="picker-cell">
+                <span class="picker-label">CUSTOM ACCENT COLOR:</span>
+                <div class="picker-wrap">
+                  <input type="color" id="picker-accent" class="flat-color-picker" value="#ff3333">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Font Selector dropdown -->
+          <div class="config-group">
+            <h2 class="group-label">FONT FAMILY SELECTION</h2>
+            <div class="dense-toggle-row">
+              <label class="toggle-cell">
+                <input type="radio" name="font-select" value="courier" checked>
+                <span class="cell-label">COURIER MONO (RETRO)</span>
+              </label>
+              <label class="toggle-cell">
+                <input type="radio" name="font-select" value="fira">
+                <span class="cell-label">JETBRAINS MONO (DEV)</span>
+              </label>
+              <label class="toggle-cell">
+                <input type="radio" name="font-select" value="arial">
+                <span class="cell-label">ARIAL SANS (MODERN)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= STATISTICS SCREEN ================= -->
+      <section id="stats-screen" class="view-panel">
+        <header class="app-header">
+          <h2 class="main-title">SYSTEM PERFORMANCE STATISTICS</h2>
+          <p class="subtitle">RETRIEVED PERSONAL BEST METRICS AND MAX CONSECUTIVE COUNTERS</p>
+        </header>
+
+        <div class="menu-content">
+          <div class="stat-card full-width">
             <span class="label">PERSONAL BEST SCORE</span>
             <span id="best-score" class="value">0</span>
           </div>
-          <div class="stat-card">
+          <div class="stat-card full-width">
             <span class="label">MAX CONSECUTIVE STREAK</span>
             <span id="best-streak" class="value">0</span>
           </div>
-        </footer>
+        </div>
       </section>
 
       <!-- ================= GAMEPLAY PANEL VIEW ================= -->
@@ -226,8 +292,10 @@
   <!-- Binding script linking the sidebar buttons directly to active C# states in app.js -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Sidebar Navigation selectors
       const tabArithmetic = document.getElementById('tab-arithmetic');
       const tabMultiplication = document.getElementById('tab-multiplication');
+      const tabOptions = document.getElementById('tab-options');
       const tabStats = document.getElementById('tab-stats');
       const tabExit = document.getElementById('tab-exit');
       
@@ -235,8 +303,23 @@
       const optMultiplication = document.getElementById('opt-multiplication');
       const startBtn = document.getElementById('start-btn');
       
-      // Track active button styling
-      const tabs = [tabArithmetic, tabMultiplication, tabStats, tabExit];
+      const tabs = [tabArithmetic, tabMultiplication, tabOptions, tabStats, tabExit];
+      const screens = [
+        document.getElementById('menu-screen'),
+        document.getElementById('options-screen'),
+        document.getElementById('stats-screen'),
+        document.getElementById('game-screen'),
+        document.getElementById('summary-screen')
+      ];
+
+      function showView(targetId) {
+        screens.forEach(s => {
+          if (s) s.classList.remove('active');
+        });
+        const target = document.getElementById(targetId);
+        if (target) target.classList.add('active');
+      }
+      
       function setTabActive(activeTab) {
         tabs.forEach(t => t.classList.remove('active'));
         activeTab.classList.add('active');
@@ -253,6 +336,7 @@
         const menuBtn = document.getElementById('menu-btn');
         if (menuBtn && menuBtn.offsetParent !== null) menuBtn.click();
         
+        showView('menu-screen');
         startBtn.click();
       });
 
@@ -267,24 +351,26 @@
         const menuBtn = document.getElementById('menu-btn');
         if (menuBtn && menuBtn.offsetParent !== null) menuBtn.click();
         
+        showView('menu-screen');
         startBtn.click();
+      });
+
+      tabOptions.addEventListener('click', () => {
+        setTabActive(tabOptions);
+        // Abort session if in active gameplay
+        const quitBtn = document.getElementById('quit-btn');
+        if (quitBtn && quitBtn.offsetParent !== null) quitBtn.click();
+        
+        showView('options-screen');
       });
 
       tabStats.addEventListener('click', () => {
         setTabActive(tabStats);
-        // Abort active session if running
+        // Abort session if in active gameplay
         const quitBtn = document.getElementById('quit-btn');
         if (quitBtn && quitBtn.offsetParent !== null) quitBtn.click();
-        const menuBtn = document.getElementById('menu-btn');
-        if (menuBtn && menuBtn.offsetParent !== null) menuBtn.click();
         
-        // Highlight stats panel
-        const statsPanel = document.getElementById('stats-panel-anchor');
-        if (statsPanel) {
-          statsPanel.scrollIntoView({ behavior: 'smooth' });
-          statsPanel.classList.add('highlight-stats');
-          setTimeout(() => statsPanel.classList.remove('highlight-stats'), 1500);
-        }
+        showView('stats-screen');
       });
 
       tabExit.addEventListener('click', () => {
@@ -292,6 +378,189 @@
         const exitBtnReal = document.getElementById('exit-btn');
         if (exitBtnReal) exitBtnReal.click();
       });
+
+      // ==========================================================================
+      // OPTIONS, DYNAMIC THEMING, AND CUSTOMIZATION CONTROLLER
+      // ==========================================================================
+      const themes = {
+        default: {
+          '--bg-color': '#000000',
+          '--bg-sidebar': '#060606',
+          '--text-color': '#cccccc',
+          '--text-secondary': '#aaaaaa',
+          '--text-muted': '#555555',
+          '--text-white': '#ffffff',
+          '--text-amber': '#ffb000',
+          '--primary-accent': '#ff3333',
+          '--maroon-solid': '#4a1515',
+          '--maroon-border': '#7a2222',
+          '--maroon-hover': '#5c1d1d',
+          '--border-light': '#222222',
+          '--border-sidebar': '#381515'
+        },
+        zetamac: {
+          '--bg-color': '#ffffff',
+          '--bg-sidebar': '#f7f7f7',
+          '--text-color': '#333333',
+          '--text-secondary': '#555555',
+          '--text-muted': '#999999',
+          '--text-white': '#000000',
+          '--text-amber': '#333333',
+          '--primary-accent': '#333333',
+          '--maroon-solid': '#eeeeee',
+          '--maroon-border': '#cccccc',
+          '--maroon-hover': '#dddddd',
+          '--border-light': '#dddddd',
+          '--border-sidebar': '#cccccc'
+        },
+        matrix: {
+          '--bg-color': '#050c08',
+          '--bg-sidebar': '#020604',
+          '--text-color': '#00ff00',
+          '--text-secondary': '#00cc00',
+          '--text-muted': '#004d00',
+          '--text-white': '#55ff55',
+          '--text-amber': '#00ff00',
+          '--primary-accent': '#00ff00',
+          '--maroon-solid': '#002400',
+          '--maroon-border': '#005900',
+          '--maroon-hover': '#003800',
+          '--border-light': '#002400',
+          '--border-sidebar': '#004d00'
+        },
+        slate: {
+          '--bg-color': '#1e1e2e',
+          '--bg-sidebar': '#11111b',
+          '--text-color': '#cdd6f4',
+          '--text-secondary': '#a6adc8',
+          '--text-muted': '#585b70',
+          '--text-white': '#cdd6f4',
+          '--text-amber': '#f9e2af',
+          '--primary-accent': '#f38ba8',
+          '--maroon-solid': '#313244',
+          '--maroon-border': '#45475a',
+          '--maroon-hover': '#3f3f56',
+          '--border-light': '#313244',
+          '--border-sidebar': '#45475a'
+        }
+      };
+
+      const btnDefault = document.getElementById('btn-theme-default');
+      const btnZetamac = document.getElementById('btn-theme-zetamac');
+      const btnMatrix = document.getElementById('btn-theme-matrix');
+      const btnSlate = document.getElementById('btn-theme-slate');
+      
+      const pickerBg = document.getElementById('picker-bg');
+      const pickerAccent = document.getElementById('picker-accent');
+      const fontRadios = document.getElementsByName('font-select');
+
+      function darkenColor(hex, percent) {
+        let num = parseInt(hex.replace("#",""), 16),
+            amt = Math.round(2.55 * percent),
+            R = (num >> 16) - amt,
+            G = (num >> 8 & 0x00FF) - amt,
+            B = (num & 0x0000FF) - amt;
+        return "#" + (0x1000000 + (R<0?0:R>255?255:R)*0x10000 + (G<0?0:G>255?255:G)*0x100 + (B<0?0:B>255?255:B)).toString(16).slice(1);
+      }
+
+      function applyThemePreset(presetName) {
+        const theme = themes[presetName] || themes.default;
+        Object.keys(theme).forEach(key => {
+          document.documentElement.style.setProperty(key, theme[key]);
+        });
+        
+        // Update picker visual inputs
+        pickerBg.value = theme['--bg-color'];
+        pickerAccent.value = theme['--primary-accent'];
+        
+        localStorage.setItem('qm_theme_preset', presetName);
+      }
+
+      function applyCustomColors() {
+        const bgVal = pickerBg.value;
+        const accentVal = pickerAccent.value;
+        
+        const darkBgSidebar = darkenColor(bgVal, 10);
+        const darkMaroonSolid = darkenColor(accentVal, 60);
+        const darkMaroonBorder = darkenColor(accentVal, 40);
+        const darkMaroonHover = darkenColor(accentVal, 50);
+        const borderLight = darkenColor(bgVal, -15); // slightly lighter border than background
+
+        document.documentElement.style.setProperty('--bg-color', bgVal);
+        document.documentElement.style.setProperty('--bg-sidebar', darkBgSidebar);
+        document.documentElement.style.setProperty('--text-color', accentVal);
+        document.documentElement.style.setProperty('--text-secondary', darkenColor(accentVal, -10));
+        document.documentElement.style.setProperty('--text-white', '#ffffff');
+        document.documentElement.style.setProperty('--text-amber', '#ffb000');
+        document.documentElement.style.setProperty('--primary-accent', accentVal);
+        document.documentElement.style.setProperty('--maroon-solid', darkMaroonSolid);
+        document.documentElement.style.setProperty('--maroon-border', darkMaroonBorder);
+        document.documentElement.style.setProperty('--maroon-hover', darkMaroonHover);
+        document.documentElement.style.setProperty('--border-light', borderLight);
+        document.documentElement.style.setProperty('--border-sidebar', darkMaroonBorder);
+        
+        localStorage.setItem('qm_theme_preset', 'custom');
+        localStorage.setItem('qm_custom_bg', bgVal);
+        localStorage.setItem('qm_custom_accent', accentVal);
+      }
+
+      function applyFontSelection(fontName) {
+        let fontValue = "'Courier New', Courier, monospace";
+        if (fontName === 'fira') {
+          fontValue = "'JetBrains Mono', 'Fira Code', monospace";
+        } else if (fontName === 'arial') {
+          fontValue = "'Arial', sans-serif";
+        }
+        document.documentElement.style.setProperty('--font-family', fontValue);
+        localStorage.setItem('qm_font_selection', fontName);
+      }
+
+      // Hook up preset buttons
+      btnDefault.addEventListener('click', () => applyThemePreset('default'));
+      btnZetamac.addEventListener('click', () => applyThemePreset('zetamac'));
+      btnMatrix.addEventListener('click', () => applyThemePreset('matrix'));
+      btnSlate.addEventListener('click', () => applyThemePreset('slate'));
+
+      // Hook up color pickers
+      pickerBg.addEventListener('input', applyCustomColors);
+      pickerAccent.addEventListener('input', applyCustomColors);
+
+      // Hook up font radios
+      for (let radio of fontRadios) {
+        radio.addEventListener('change', (e) => {
+          applyFontSelection(e.target.value);
+        });
+      }
+
+      // ==========================================================================
+      // PERSISTENT THEME LOADING ON APP INITIALIZE
+      // ==========================================================================
+      function loadPersistedSettings() {
+        const savedPreset = localStorage.getItem('qm_theme_preset') || 'default';
+        const savedBg = localStorage.getItem('qm_custom_bg');
+        const savedAccent = localStorage.getItem('qm_custom_accent');
+        const savedFont = localStorage.getItem('qm_font_selection') || 'courier';
+
+        if (savedPreset === 'custom' && savedBg && savedAccent) {
+          pickerBg.value = savedBg;
+          pickerAccent.value = savedAccent;
+          applyCustomColors();
+        } else {
+          applyThemePreset(savedPreset);
+        }
+
+        applyFontSelection(savedFont);
+        
+        // Match the active radio state for font select
+        for (let radio of fontRadios) {
+          if (radio.value === savedFont) {
+            radio.checked = true;
+          }
+        }
+      }
+
+      // Initialize persistent themes
+      loadPersistedSettings();
     });
   </script>
   <script src="app.js"></script>
