@@ -13,41 +13,42 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-wrapper">
-    <!-- Clean flat black container -->
-    <div class="miniplayer-container">
+  <div class="app-container">
+    <!-- Widescreen Left Sidebar Menu modeled after Antimatter Dimensions -->
+    <aside class="sidebar-menu">
+      <div class="logo-area">
+        <h2 class="logo-text">Quick<span>Math</span></h2>
+        <span class="logo-version">v1.2.0-quant</span>
+      </div>
+      <div class="sidebar-tabs">
+        <button class="tab-btn active" id="tab-arithmetic">ARITHMETIC</button>
+        <button class="tab-btn" id="tab-multiplication">MULTIPLICATION</button>
+        <button class="tab-btn" id="tab-stats">STATISTICS</button>
+        <button class="tab-btn" id="tab-exit">EXIT</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel occupying remaining widescreen space -->
+    <main class="main-content">
       
-      <!-- ================= MAIN MENU SCREEN ================= -->
+      <!-- ================= CONFIGURATION / SETTINGS SCREEN ================= -->
       <section id="menu-screen" class="view-panel active">
         <header class="app-header">
-          <div class="logo-area">
-            <img src="logo.png" alt="QuickMath Logo" class="logo-icon">
-            <h1 class="logo-text">Quick<span>Math</span></h1>
-          </div>
-          <p class="subtitle">QUANT MENTAL ARITHMETIC TRAINER</p>
+          <h2 class="main-title">TRAINING PROTOCOLS</h2>
+          <p class="subtitle">SELECT PROTOCOL FROM THE SIDEBAR TABS OR CONFIGURE DETAILS BELOW</p>
         </header>
 
-        <main class="menu-content">
-          <!-- Operations Configuration -->
-          <div class="config-group">
-            <h2 class="group-label">1. Practice Focus</h2>
-            <div class="dense-toggle-row">
-              <label class="toggle-cell" id="label-arithmetic">
-                <input type="checkbox" id="opt-arithmetic" checked>
-                <span class="cell-label">ARITHMETIC</span>
-              </label>
-
-              <label class="toggle-cell" id="label-multiplication">
-                <input type="checkbox" id="opt-multiplication" checked>
-                <span class="cell-label">MULTIPLICATION</span>
-              </label>
-            </div>
+        <div class="menu-content">
+          <!-- Operations Configuration (Hidden checkbox targets managed by sidebar/menu) -->
+          <div class="config-group hidden-inputs">
+            <input type="checkbox" id="opt-arithmetic" checked>
+            <input type="checkbox" id="opt-multiplication" checked>
             <div id="config-error" class="validation-message hidden">! PRACTICE FOCUS REQUIRED</div>
           </div>
 
           <!-- Answer Input Mode -->
           <div class="config-group">
-            <h2 class="group-label">2. Input Mechanics</h2>
+            <h2 class="group-label">INPUT MECHANICS</h2>
             <div class="dense-toggle-row">
               <label class="toggle-cell">
                 <input type="radio" name="answer-mode" value="multiple-choice" checked>
@@ -62,7 +63,7 @@
 
           <!-- Time Limit Control -->
           <div class="config-group">
-            <h2 class="group-label">3. Time Pressure</h2>
+            <h2 class="group-label">TIME PRESSURE</h2>
             <div class="dense-toggle-row four-cols">
               <label class="toggle-cell">
                 <input type="radio" name="time-limit" value="none">
@@ -83,31 +84,32 @@
             </div>
           </div>
 
-          <!-- Play Action Buttons -->
+          <!-- Unified Play Button -->
           <div class="action-buttons">
             <button id="start-btn" class="btn btn-primary">
-              <span>START SESSION</span>
+              <span>RUN SELECTED PROTOCOL</span>
             </button>
-            <button id="exit-btn" class="btn btn-secondary">
+            <button id="exit-btn" class="btn btn-secondary hidden">
               <span>EXIT</span>
             </button>
           </div>
-        </main>
+        </div>
 
         <!-- Dynamic High Stats Panel -->
-        <footer class="menu-stats">
+        <footer class="menu-stats" id="stats-panel-anchor">
+          <h2 class="group-label full-width">SYSTEM PERFORMANCE STATISTICS</h2>
           <div class="stat-card">
-            <span class="label">PERSONAL BEST</span>
+            <span class="label">PERSONAL BEST SCORE</span>
             <span id="best-score" class="value">0</span>
           </div>
           <div class="stat-card">
-            <span class="label">MAX STREAK</span>
+            <span class="label">MAX CONSECUTIVE STREAK</span>
             <span id="best-streak" class="value">0</span>
           </div>
         </footer>
       </section>
 
-      <!-- ================= GAMEPLAY MINIPLAYER VIEW ================= -->
+      <!-- ================= GAMEPLAY PANEL VIEW ================= -->
       <section id="game-screen" class="view-panel">
         <!-- HUD Header -->
         <header class="game-hud">
@@ -116,19 +118,12 @@
           </button>
 
           <div class="hud-stats-group">
-            <div class="hud-stat-item">
-              <span class="hud-label">SCORE:</span>
-              <span id="hud-score" class="hud-val">00</span>
-            </div>
-            
-            <div class="hud-stat-item" id="streak-indicator">
-              <span class="hud-label">STREAK:</span>
-              <span id="hud-streak" class="hud-val">0</span>
-            </div>
+            <span class="hud-text-string" id="streak-indicator">You have <span id="hud-streak">0</span> consecutive correct answers.</span>
+            <span class="hud-text-string">Score: <span id="hud-score">00</span></span>
           </div>
         </header>
 
-        <!-- Time Tracker Bar -->
+        <!-- Flat Rectangular Time Tracker Bar -->
         <div class="timer-bar-container" id="timer-container">
           <div id="timer-bar" class="timer-bar-fill"></div>
         </div>
@@ -138,22 +133,22 @@
           <div class="question-display" id="question-text">-- × --</div>
         </div>
 
-        <!-- Multiple Choice Mode Layout -->
+        <!-- Tabular Dimensions MC Choice Rows -->
         <div id="mc-container" class="choices-container active">
           <button class="choice-btn" data-index="0">
-            <span class="choice-key">1</span>
+            <span class="choice-key">Option 1 [Key 1]</span>
             <span class="choice-value">--</span>
           </button>
           <button class="choice-btn" data-index="1">
-            <span class="choice-key">2</span>
+            <span class="choice-key">Option 2 [Key 2]</span>
             <span class="choice-value">--</span>
           </button>
           <button class="choice-btn" data-index="2">
-            <span class="choice-key">3</span>
+            <span class="choice-key">Option 3 [Key 3]</span>
             <span class="choice-value">--</span>
           </button>
           <button class="choice-btn" data-index="3">
-            <span class="choice-key">4</span>
+            <span class="choice-key">Option 4 [Key 4]</span>
             <span class="choice-value">--</span>
           </button>
         </div>
@@ -176,7 +171,7 @@
       <section id="summary-screen" class="view-panel">
         <header class="summary-header">
           <h1 class="summary-title">[ SESSION COMPLETE ]</h1>
-          <p id="summary-reason" class="summary-subtitle">PRACTICE MAKES PERFECT</p>
+          <p id="summary-reason" class="summary-subtitle">Practice makes perfect</p>
         </header>
 
         <main class="summary-stats">
@@ -225,9 +220,80 @@
           </button>
         </footer>
       </section>
-    </div>
+    </main>
   </div>
 
+  <!-- Binding script linking the sidebar buttons directly to active C# states in app.js -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabArithmetic = document.getElementById('tab-arithmetic');
+      const tabMultiplication = document.getElementById('tab-multiplication');
+      const tabStats = document.getElementById('tab-stats');
+      const tabExit = document.getElementById('tab-exit');
+      
+      const optArithmetic = document.getElementById('opt-arithmetic');
+      const optMultiplication = document.getElementById('opt-multiplication');
+      const startBtn = document.getElementById('start-btn');
+      
+      // Track active button styling
+      const tabs = [tabArithmetic, tabMultiplication, tabStats, tabExit];
+      function setTabActive(activeTab) {
+        tabs.forEach(t => t.classList.remove('active'));
+        activeTab.classList.add('active');
+      }
+
+      tabArithmetic.addEventListener('click', () => {
+        setTabActive(tabArithmetic);
+        optArithmetic.checked = true;
+        optMultiplication.checked = false;
+        
+        // Go back to menu if in gameplay/summary
+        const quitBtn = document.getElementById('quit-btn');
+        if (quitBtn && quitBtn.offsetParent !== null) quitBtn.click();
+        const menuBtn = document.getElementById('menu-btn');
+        if (menuBtn && menuBtn.offsetParent !== null) menuBtn.click();
+        
+        startBtn.click();
+      });
+
+      tabMultiplication.addEventListener('click', () => {
+        setTabActive(tabMultiplication);
+        optArithmetic.checked = false;
+        optMultiplication.checked = true;
+        
+        // Go back to menu if in gameplay/summary
+        const quitBtn = document.getElementById('quit-btn');
+        if (quitBtn && quitBtn.offsetParent !== null) quitBtn.click();
+        const menuBtn = document.getElementById('menu-btn');
+        if (menuBtn && menuBtn.offsetParent !== null) menuBtn.click();
+        
+        startBtn.click();
+      });
+
+      tabStats.addEventListener('click', () => {
+        setTabActive(tabStats);
+        // Abort active session if running
+        const quitBtn = document.getElementById('quit-btn');
+        if (quitBtn && quitBtn.offsetParent !== null) quitBtn.click();
+        const menuBtn = document.getElementById('menu-btn');
+        if (menuBtn && menuBtn.offsetParent !== null) menuBtn.click();
+        
+        // Highlight stats panel
+        const statsPanel = document.getElementById('stats-panel-anchor');
+        if (statsPanel) {
+          statsPanel.scrollIntoView({ behavior: 'smooth' });
+          statsPanel.classList.add('highlight-stats');
+          setTimeout(() => statsPanel.classList.remove('highlight-stats'), 1500);
+        }
+      });
+
+      tabExit.addEventListener('click', () => {
+        setTabActive(tabExit);
+        const exitBtnReal = document.getElementById('exit-btn');
+        if (exitBtnReal) exitBtnReal.click();
+      });
+    });
+  </script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -18,12 +18,12 @@ namespace QuickMathDesktop
             Form mainForm = new Form
             {
                 Text = "QuickMath // Quant Interview Prep",
-                Width = 536,
-                Height = 759,
+                Width = 1040,
+                Height = 679,
                 StartPosition = FormStartPosition.CenterScreen,
                 FormBorderStyle = FormBorderStyle.Sizable,
                 MaximizeBox = true,
-                MinimumSize = new System.Drawing.Size(536, 759)
+                MinimumSize = new System.Drawing.Size(1040, 679)
             };
 
             string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.ico");
