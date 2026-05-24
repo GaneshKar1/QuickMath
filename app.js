@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Live Stats
     score: 0,
     streak: 0,
+    maxSessionStreak: 0,
     totalAnswered: 0,
     totalCorrect: 0,
     
@@ -27,6 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
     timerStart: null,
     timerDurationMs: 8000,
     isInputLocked: false,
+    
+    // Time Attack Extensions
+    isTimeAttack: false,
+    taDuration: 60,
     
     // Review Session Data
     lastIncorrectQuestion: null
@@ -133,11 +138,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle menu action buttons
     startBtn.addEventListener('click', () => {
       if (validateConfig()) {
+        state.isTimeAttack = false;
         startGame();
       }
     });
 
     exitBtn.addEventListener('click', () => {
+      // Exit native WebView2 desktop window if possible
+      if (window.chrome && window.chrome.webview) {
+        window.chrome.webview.postMessage("exit");
+      }
+      
       // Return app to clear/blank splash state
       menuScreen.classList.remove('active');
       gameScreen.classList.remove('active');
@@ -164,6 +175,75 @@ document.addEventListener('DOMContentLoaded', () => {
         loadLocalStats();
       });
     });
+
+    // Time Attack elements validation and triggers
+    const taStartBtn = document.getElementById('ta-start-btn');
+    const taArithmetic = document.getElementById('ta-arithmetic');
+    const taMultiplication = document.getElementById('ta-multiplication');
+    const taConfigError = document.getElementById('ta-config-error');
+
+    function validateTAConfig() {
+      const isArithmetic = taArithmetic ? taArithmetic.checked : false;
+      const isMultiplication = taMultiplication ? taMultiplication.checked : false;
+      
+      if (!isArithmetic && !isMultiplication) {
+        if (taConfigError) taConfigError.classList.remove('hidden');
+        if (taStartBtn) {
+          taStartBtn.disabled = true;
+          taStartBtn.style.opacity = '0.5';
+          taStartBtn.style.cursor = 'not-allowed';
+        }
+        return false;
+      } else {
+        if (taConfigError) taConfigError.classList.add('hidden');
+        if (taStartBtn) {
+          taStartBtn.disabled = false;
+          taStartBtn.style.opacity = '1';
+          taStartBtn.style.cursor = 'pointer';
+        }
+        return true;
+      }
+    }
+
+    if (taArithmetic && taMultiplication) {
+      [taArithmetic, taMultiplication].forEach(cb => {
+        cb.addEventListener('change', () => {
+          validateTAConfig();
+        });
+      });
+    }
+
+    if (taStartBtn) {
+      taStartBtn.addEventListener('click', () => {
+        if (validateTAConfig()) {
+          state.isTimeAttack = true;
+          
+          state.selectedOperations = [];
+          if (taArithmetic.checked) state.selectedOperations.push('arithmetic');
+          if (taMultiplication.checked) state.selectedOperations.push('multiplication');
+
+          // Read Input Mode
+          const taAnswerModeRadios = document.getElementsByName('ta-answer-mode');
+          for (let radio of taAnswerModeRadios) {
+            if (radio.checked) {
+              state.answerMode = radio.value;
+              break;
+            }
+          }
+
+          // Read Duration (60, 180, 300)
+          const taDurationRadios = document.getElementsByName('ta-duration');
+          for (let radio of taDurationRadios) {
+            if (radio.checked) {
+              state.taDuration = parseInt(radio.value);
+              break;
+            }
+          }
+
+          startGame();
+        }
+      });
+    }
 
     // In-game Exit Button
     quitBtn.addEventListener('click', () => {
@@ -197,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     menuBtn.addEventListener('click', () => {
+      state.isTimeAttack = false;
       showScreen(menuScreen);
       loadLocalStats();
     });
@@ -263,26 +344,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- GAMEPLAY SESSION CONTROLLER ---
   function startGame() {
-    // 1. Read parameters
-    state.selectedOperations = [];
-    if (optArithmetic.checked) state.selectedOperations.push('arithmetic');
-    if (optMultiplication.checked) state.selectedOperations.push('multiplication');
+    // 1. Read parameters (only if not already set by Time Attack button)
+    if (!state.isTimeAttack) {
+      state.selectedOperations = [];
+      if (optArithmetic.checked) state.selectedOperations.push('arithmetic');
+      if (optMultiplication.checked) state.selectedOperations.push('multiplication');
 
-    // Read Input Mode
-    for (let radio of answerModeRadios) {
-      if (radio.checked) {
-        state.answerMode = radio.value;
-        break;
+      // Read Input Mode
+      for (let radio of answerModeRadios) {
+        if (radio.checked) {
+          state.answerMode = radio.value;
+          break;
+        }
       }
-    }
 
-    // Read Timer Config
-    state.timeLimit = null;
-    for (let radio of timeLimitRadios) {
-      if (radio.checked) {
-        const val = radio.value;
-        state.timeLimit = val === 'none' ? null : parseInt(val);
-        break;
+      // Read Timer Config
+      state.timeLimit = null;
+      for (let radio of timeLimitRadios) {
+        if (radio.checked) {
+          const val = radio.value;
+          if (val === 'none') {
+            state.timeLimit = null;
+          } else if (val === 'custom') {
+            const customVal = parseInt(document.getElementById('input-time-custom').value);
+            state.timeLimit = isNaN(customVal) || customVal <= 0 ? 10 : customVal;
+          } else {
+            state.timeLimit = parseInt(val);
+          }
+          break;
+        }
       }
     }
 
@@ -290,6 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.isPlaying = true;
     state.score = 0;
     state.streak = 0;
+    state.maxSessionStreak = 0;
     state.totalAnswered = 0;
     state.totalCorrect = 0;
     state.isInputLocked = false;
@@ -310,7 +401,11 @@ document.addEventListener('DOMContentLoaded', () => {
       fibInput.value = '';
     }
 
-    if (state.timeLimit) {
+    if (state.isTimeAttack) {
+      timerContainer.classList.add('active');
+      timerBar.style.width = '100%';
+      timerBar.style.backgroundColor = 'var(--success-solid)';
+    } else if (state.timeLimit) {
       timerContainer.classList.add('active');
       state.timerDurationMs = state.timeLimit * 1000;
     } else {
@@ -322,6 +417,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Generate initial question
     nextQuestion();
+
+    // 4. Start global timer if in Time Attack mode
+    if (state.isTimeAttack) {
+      startTACountdownTimer();
+    }
   }
 
   function nextQuestion() {
@@ -358,8 +458,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 50);
     }
 
-    // Launch countdown timer
-    if (state.timeLimit) {
+    // Launch countdown timer (only in standard practice mode)
+    if (state.timeLimit && !state.isTimeAttack) {
       startCountdownTimer();
     }
   }
@@ -549,10 +649,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 16); // ~60fps smooth animation transitions
   }
 
+  // --- TIME ATTACK GLOBAL TIMER BINDING ---
+  function startTACountdownTimer() {
+    clearInterval(state.timerInterval);
+    state.timerStart = performance.now();
+    state.timerDurationMs = state.taDuration * 1000;
+    
+    state.timerInterval = setInterval(() => {
+      const elapsed = performance.now() - state.timerStart;
+      const remaining = Math.max(0, state.timerDurationMs - elapsed);
+      state.timeLeft = remaining / 1000;
+      
+      const percent = (remaining / state.timerDurationMs) * 100;
+      timerBar.style.width = `${percent}%`;
+      
+      // Set indicator warning colors
+      if (percent > 50) {
+        timerBar.style.backgroundColor = 'var(--success-solid)';
+      } else if (percent > 25) {
+        timerBar.style.backgroundColor = 'hsl(35, 100%, 50%)'; // Orange alert
+      } else {
+        timerBar.style.backgroundColor = 'var(--error-solid)'; // Red alert
+      }
+
+      // Time Over condition
+      if (remaining <= 0) {
+        clearInterval(state.timerInterval);
+        state.timeLeft = 0;
+        endGame(false, 'Time Attack Complete');
+      }
+    }, 16);
+  }
+
   // --- SUBMISSION AND VALIDATION LOOPS ---
   function handleAnswerSubmission(userVal, choiceElement) {
     state.isInputLocked = true;
-    clearInterval(state.timerInterval);
+    if (!state.isTimeAttack) {
+      clearInterval(state.timerInterval);
+    }
     state.totalAnswered += 1;
 
     const correctVal = state.currentProblem.correctAnswer;
@@ -562,10 +696,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // --- CORRECT PATHWAY ---
       state.totalCorrect += 1;
       state.streak += 1;
+      if (state.streak > state.maxSessionStreak) {
+        state.maxSessionStreak = state.streak;
+      }
       
       // Calculate optimized score: base points (10) + speed bonus (remaining time scale)
       let questionPoints = 10;
-      if (state.timeLimit && state.timeLeft > 0) {
+      if (!state.isTimeAttack && state.timeLimit && state.timeLeft > 0) {
         const speedBonus = Math.max(1, Math.round(state.timeLeft * 2.5));
         questionPoints += speedBonus;
       }
@@ -617,10 +754,25 @@ document.addEventListener('DOMContentLoaded', () => {
         fibInput.style.boxShadow = '0 0 15px var(--error-glow)';
       }
 
-      // Give 1.2s to visually inspect the error feedback before moving to Game Over
-      setTimeout(() => {
-        endGame(false, 'Calculation Error');
-      }, 1200);
+      if (state.isTimeAttack) {
+        // In Time Attack mode, reset streak but keep playing
+        state.streak = 0;
+        hudStreak.textContent = '0';
+        streakIndicator.classList.remove('has-streak');
+        
+        setTimeout(() => {
+          if (state.answerMode === 'fill-blank') {
+            fibInput.style.borderColor = '';
+            fibInput.style.boxShadow = '';
+          }
+          nextQuestion();
+        }, 600);
+      } else {
+        // Give 1.2s to visually inspect the error feedback before moving to Game Over
+        setTimeout(() => {
+          endGame(false, 'Calculation Error');
+        }, 1200);
+      }
     }
   }
 
@@ -670,7 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set up Game Over summary outputs
     summaryReason.textContent = isNewBest ? '⭐ New Personal Best! ⭐' : reasonStr;
     finalScore.textContent = state.score;
-    finalStreak.textContent = state.streak;
+    finalStreak.textContent = state.maxSessionStreak;
     
     const accuracy = state.totalAnswered > 0 ? Math.round((state.totalCorrect / state.totalAnswered) * 100) : 0;
     finalAccuracy.textContent = `${accuracy}%`;

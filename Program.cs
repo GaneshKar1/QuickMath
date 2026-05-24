@@ -53,6 +53,19 @@ namespace QuickMathDesktop
                     
                     await webView.EnsureCoreWebView2Async(env);
 
+                    webView.CoreWebView2.WebMessageReceived += (s, args) =>
+                    {
+                        try
+                        {
+                            string message = args.TryGetWebMessageAsString();
+                            if (message == "exit")
+                            {
+                                Application.Exit();
+                            }
+                        }
+                        catch { }
+                    };
+
                     // Disable standard context menus and developer tools to keep the clean app feeling
                     webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                     webView.CoreWebView2.Settings.AreDevToolsEnabled = false;

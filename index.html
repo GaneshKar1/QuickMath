@@ -23,6 +23,7 @@
       <div class="sidebar-tabs">
         <button class="tab-btn active" id="tab-arithmetic">ARITHMETIC</button>
         <button class="tab-btn" id="tab-multiplication">MULTIPLICATION</button>
+        <button class="tab-btn" id="tab-time-attack">TIME ATTACK</button>
         <button class="tab-btn" id="tab-options">OPTIONS</button>
         <button class="tab-btn" id="tab-stats">STATISTICS</button>
         <button class="tab-btn" id="tab-tips">TIPS</button>
@@ -66,7 +67,7 @@
           <!-- Time Limit Control -->
           <div class="config-group">
             <h2 class="group-label">TIME PRESSURE</h2>
-            <div class="dense-toggle-row four-cols">
+            <div class="dense-toggle-row">
               <label class="toggle-cell">
                 <input type="radio" name="time-limit" value="none">
                 <span class="cell-label">NO TIMER</span>
@@ -83,6 +84,13 @@
                 <input type="radio" name="time-limit" value="3">
                 <span class="cell-label">3S LIMIT</span>
               </label>
+              <label class="toggle-cell custom-time-cell">
+                <input type="radio" name="time-limit" id="radio-time-custom" value="custom">
+                <span class="cell-label" style="display: flex; align-items: center; gap: 4px; justify-content: center; width: 100%;">
+                  <span>CUSTOM:</span>
+                  <input type="number" id="input-time-custom" min="1" max="999" value="10" style="width: 32px; background: transparent; border: none; border-bottom: 1px solid var(--text-secondary); color: var(--text-color); font-family: var(--font-mono); font-size: 11px; text-align: center; outline: none; padding: 0;">s
+                </span>
+              </label>
             </div>
           </div>
 
@@ -93,6 +101,73 @@
             </button>
             <button id="exit-btn" class="btn btn-secondary hidden">
               <span>EXIT</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TIME ATTACK SETTINGS SCREEN ================= -->
+      <section id="time-attack-screen" class="view-panel">
+        <header class="app-header">
+          <h2 class="main-title">TIME ATTACK PROTOCOLS</h2>
+          <p class="subtitle">SOLVE AS MANY EQUATIONS AS POSSIBLE IN A HIGH-DENSITY LIMIT CONTEXT</p>
+        </header>
+
+        <div class="menu-content">
+          <!-- Duration Selection Matrix -->
+          <div class="config-group">
+            <h2 class="group-label">SESSION DURATION</h2>
+            <div class="dense-toggle-row">
+              <label class="toggle-cell">
+                <input type="radio" name="ta-duration" value="60" checked>
+                <span class="cell-label">1 MINUTE CHALLENGE</span>
+              </label>
+              <label class="toggle-cell">
+                <input type="radio" name="ta-duration" value="180">
+                <span class="cell-label">3 MINUTE STAMINA</span>
+              </label>
+              <label class="toggle-cell">
+                <input type="radio" name="ta-duration" value="300">
+                <span class="cell-label">5 MINUTE ENDURANCE</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Operations Selection -->
+          <div class="config-group">
+            <h2 class="group-label">PRACTICE DOMAIN</h2>
+            <div class="dense-toggle-row">
+              <label class="toggle-cell">
+                <input type="checkbox" id="ta-arithmetic" checked>
+                <span class="cell-label" id="label-ta-arithmetic">ARITHMETIC PRACTICE</span>
+              </label>
+              <label class="toggle-cell">
+                <input type="checkbox" id="ta-multiplication" checked>
+                <span class="cell-label" id="label-ta-multiplication">MULTIPLICATION DOMAIN</span>
+              </label>
+            </div>
+            <div id="ta-config-error" class="validation-message hidden">! PRACTICE FOCUS REQUIRED</div>
+          </div>
+
+          <!-- Answer Input Mode -->
+          <div class="config-group">
+            <h2 class="group-label">INPUT MECHANICS</h2>
+            <div class="dense-toggle-row">
+              <label class="toggle-cell">
+                <input type="radio" name="ta-answer-mode" value="multiple-choice" checked>
+                <span class="cell-label">MULTIPLE CHOICE</span>
+              </label>
+              <label class="toggle-cell">
+                <input type="radio" name="ta-answer-mode" value="fill-blank">
+                <span class="cell-label">FILL-IN-THE-BLANK</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Unified Play Button -->
+          <div class="action-buttons">
+            <button id="ta-start-btn" class="btn btn-primary">
+              <span>RUN TIME ATTACK CHALLENGE</span>
             </button>
           </div>
         </div>
@@ -447,6 +522,7 @@
       // Sidebar Navigation selectors
       const tabArithmetic = document.getElementById('tab-arithmetic');
       const tabMultiplication = document.getElementById('tab-multiplication');
+      const tabTimeAttack = document.getElementById('tab-time-attack');
       const tabOptions = document.getElementById('tab-options');
       const tabStats = document.getElementById('tab-stats');
       const tabTips = document.getElementById('tab-tips');
@@ -456,9 +532,10 @@
       const optMultiplication = document.getElementById('opt-multiplication');
       const startBtn = document.getElementById('start-btn');
       
-      const tabs = [tabArithmetic, tabMultiplication, tabOptions, tabStats, tabTips, tabExit];
+      const tabs = [tabArithmetic, tabMultiplication, tabTimeAttack, tabOptions, tabStats, tabTips, tabExit];
       const screens = [
         document.getElementById('menu-screen'),
+        document.getElementById('time-attack-screen'),
         document.getElementById('options-screen'),
         document.getElementById('stats-screen'),
         document.getElementById('tips-screen'),
@@ -532,6 +609,37 @@
         const exitBtnReal = document.getElementById('exit-btn');
         if (exitBtnReal) exitBtnReal.click();
       });
+
+      tabTimeAttack.addEventListener('click', () => {
+        setTabActive(tabTimeAttack);
+        // Abort session if in active gameplay
+        const quitBtn = document.getElementById('quit-btn');
+        if (quitBtn && quitBtn.offsetParent !== null) quitBtn.click();
+        const menuBtn = document.getElementById('menu-btn');
+        if (menuBtn && menuBtn.offsetParent !== null) menuBtn.click();
+        
+        showView('time-attack-screen');
+      });
+
+      // QuickMath logo returns to standard training protocols
+      const logoArea = document.querySelector('.logo-area');
+      if (logoArea) {
+        logoArea.addEventListener('click', () => {
+          tabArithmetic.click();
+        });
+      }
+
+      // Custom time limit inputs triggers custom selection
+      const customTimeInput = document.getElementById('input-time-custom');
+      const customTimeRadio = document.getElementById('radio-time-custom');
+      if (customTimeInput && customTimeRadio) {
+        customTimeInput.addEventListener('focus', () => {
+          customTimeRadio.checked = true;
+        });
+        customTimeInput.addEventListener('input', () => {
+          customTimeRadio.checked = true;
+        });
+      }
 
       tabTips.addEventListener('click', () => {
         setTabActive(tabTips);
