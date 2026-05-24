@@ -22,7 +22,8 @@
   --font-mono: var(--font-family);
 
   /* Antimatter Dimensions Dark Maroon Palette */
-  --bg-darkest: #000000;
+  --bg-color: #000000;
+  --bg-darkest: var(--bg-color);
   --bg-sidebar: #060606;
   
   --primary-accent: #ff3333;     /* Dynamic primary accent */
@@ -37,7 +38,8 @@
   --success-solid: #00ff00;
   --error-solid: #ff0000;
   
-  --text-primary: #cccccc;
+  --text-color: #cccccc;
+  --text-primary: var(--text-color);
   --text-secondary: #aaaaaa;
   --text-muted: #555555;
   --text-white: #ffffff;
@@ -802,6 +804,104 @@ body {
   height: 100px;
   position: absolute;
   top: -36px;
-  left: -20px;
   cursor: pointer;
 }
+
+/* ==========================================================================
+   STRATEGY CENTER / TIPS SCREEN STYLES
+   ========================================================================== */
+.sub-nav-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.sub-tab-btn {
+  flex: 1;
+  padding: 10px;
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--bg-color);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+  transition: var(--transition-smooth);
+  letter-spacing: 0.5px;
+}
+
+.sub-tab-btn:hover {
+  color: var(--text-white);
+  border-color: var(--text-secondary);
+}
+
+.sub-tab-btn.active {
+  background: var(--maroon-solid);
+  border-color: var(--primary-solid);
+  color: var(--text-white);
+  box-shadow: 0 0 4px var(--primary-solid);
+}
+
+.tips-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tips-panel {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tips-panel.active {
+  display: flex;
+}
+
+.tip-row {
+  border: 1px solid var(--border-light);
+  padding: 12px;
+  background: var(--bg-sidebar);
+}
+
+.tip-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-solid);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.tip-concept {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.tip-steps {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.tip-example {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-color);
+  background: var(--bg-color);
+  border-left: 2px solid var(--primary-solid);
+  padding: 8px 12px;
+  line-height: 1.4;
+}
+
+.tip-example strong {
+  color: var(--text-white);
+}
+

@@ -25,6 +25,7 @@
         <button class="tab-btn" id="tab-multiplication">MULTIPLICATION</button>
         <button class="tab-btn" id="tab-options">OPTIONS</button>
         <button class="tab-btn" id="tab-stats">STATISTICS</button>
+        <button class="tab-btn" id="tab-tips">TIPS</button>
         <button class="tab-btn" id="tab-exit">EXIT</button>
       </div>
     </aside>
@@ -175,6 +176,74 @@
         </div>
       </section>
 
+      <!-- ================= STRATEGY CENTER & TIPS SCREEN ================= -->
+      <section id="tips-screen" class="view-panel">
+        <header class="app-header">
+          <h2 class="main-title">STRATEGY CENTER</h2>
+          <p class="subtitle">MATHEMATICAL TRICKS AND COGNITIVE SHORTCUTS FOR SPEED QUANT INTERVIEWS</p>
+        </header>
+
+        <div class="menu-content">
+          <!-- Sub-Navigation Bar -->
+          <div class="sub-nav-bar">
+            <button class="sub-tab-btn active" id="sub-tab-arithmetic">
+              [ Arithmetic Tricks ]
+            </button>
+            <button class="sub-tab-btn" id="sub-tab-multiplication">
+              [ Multiplication Tricks ]
+            </button>
+          </div>
+
+          <!-- Strategy Content Containers -->
+          <div class="tips-container">
+            <!-- Arithmetic Content Panel -->
+            <div id="panel-arithmetic-tips" class="tips-panel active">
+              <!-- Row 1 -->
+              <div class="tip-row">
+                <div class="tip-title">ROW 1: Left-to-Right Execution (Speed Addition)</div>
+                <div class="tip-concept"><strong>Concept:</strong> Do not calculate right-to-left. Process the highest place values first.</div>
+                <div class="tip-example"><strong>Example:</strong> 674 + 258 -> <strong>600+200=800</strong> -> <strong>800+70+50=920</strong> -> <strong>920+4+8=932</strong>.</div>
+              </div>
+              <!-- Row 2 -->
+              <div class="tip-row">
+                <div class="tip-title">ROW 2: Reciprocal Doubling (Division by 5/25)</div>
+                <div class="tip-concept"><strong>Concept:</strong> To divide by 5, multiply the value by 2 and shift the decimal point 1 place to the left.</div>
+                <div class="tip-example"><strong>Example:</strong> 315 / 5 -> <strong>(315 * 2) / 10</strong> -> <strong>630 / 10 = 63</strong>.</div>
+              </div>
+              <!-- Row 3 -->
+              <div class="tip-row">
+                <div class="tip-title">ROW 3: Constant Difference (No-Borrow Subtraction)</div>
+                <div class="tip-concept"><strong>Concept:</strong> Add/subtract identical values to both integers to make the subtrahend a multiple of 10.</div>
+                <div class="tip-example"><strong>Example:</strong> 83 - 47 -> Add 3 to both -> <strong>86 - 50 = 36</strong>.</div>
+              </div>
+            </div>
+
+            <!-- Multiplication Content Panel -->
+            <div id="panel-multiplication-tips" class="tips-panel">
+              <!-- Row 1 -->
+              <div class="tip-row">
+                <div class="tip-title">ROW 1: The Crisscross Method (2x2 Multiplications)</div>
+                <div class="tip-concept"><strong>Concept:</strong> Single-line execution for AB * CD.</div>
+                <div class="tip-steps"><strong>Steps:</strong> 1. Units (B*D) | 2. Cross-Sum (A*D + B*C) | 3. Tens (A*C). Carry over values sequentially.</div>
+                <div class="tip-example"><strong>Example:</strong> 23 * 45 -> <strong>(3*5=15, keep 5, carry 1)</strong> -> <strong>(2*5 + 3*4 + 1 = 23, keep 3, carry 2)</strong> -> <strong>(2*4 + 2 = 10)</strong> -> Total: <strong>1035</strong>.</div>
+              </div>
+              <!-- Row 2 -->
+              <div class="tip-row">
+                <div class="tip-title">ROW 2: Difference of Squares</div>
+                <div class="tip-concept"><strong>Concept:</strong> For numbers balancing equidistant from a round base, apply: (x-y)(x+y) = x^2 - y^2.</div>
+                <div class="tip-example"><strong>Example:</strong> 43 * 37 -> <strong>(40 + 3)(40 - 3)</strong> -> <strong>40^2 - 3^2</strong> -> <strong>1600 - 9 = 1591</strong>.</div>
+              </div>
+              <!-- Row 3 -->
+              <div class="tip-row">
+                <div class="tip-title">ROW 3: Squaring Base-5 Numbers</div>
+                <div class="tip-concept"><strong>Concept:</strong> Any number ending in 5 squared (A5 * A5) always ends in 25. The prefix is A * (A + 1).</div>
+                <div class="tip-example"><strong>Example:</strong> 75 * 75 -> Prefix = <strong>7 * 8 = 56</strong> -> Appended result = <strong>5625</strong>.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ================= GAMEPLAY PANEL VIEW ================= -->
       <section id="game-screen" class="view-panel">
         <!-- HUD Header -->
@@ -297,17 +366,19 @@
       const tabMultiplication = document.getElementById('tab-multiplication');
       const tabOptions = document.getElementById('tab-options');
       const tabStats = document.getElementById('tab-stats');
+      const tabTips = document.getElementById('tab-tips');
       const tabExit = document.getElementById('tab-exit');
       
       const optArithmetic = document.getElementById('opt-arithmetic');
       const optMultiplication = document.getElementById('opt-multiplication');
       const startBtn = document.getElementById('start-btn');
       
-      const tabs = [tabArithmetic, tabMultiplication, tabOptions, tabStats, tabExit];
+      const tabs = [tabArithmetic, tabMultiplication, tabOptions, tabStats, tabTips, tabExit];
       const screens = [
         document.getElementById('menu-screen'),
         document.getElementById('options-screen'),
         document.getElementById('stats-screen'),
+        document.getElementById('tips-screen'),
         document.getElementById('game-screen'),
         document.getElementById('summary-screen')
       ];
@@ -377,6 +448,41 @@
         setTabActive(tabExit);
         const exitBtnReal = document.getElementById('exit-btn');
         if (exitBtnReal) exitBtnReal.click();
+      });
+
+      tabTips.addEventListener('click', () => {
+        setTabActive(tabTips);
+        // Abort session if in active gameplay
+        const quitBtn = document.getElementById('quit-btn');
+        if (quitBtn && quitBtn.offsetParent !== null) quitBtn.click();
+        
+        showView('tips-screen');
+      });
+
+      // ==========================================================================
+      // STRATEGY CENTER / TIPS SUB-TAB CONTROLLER
+      // ==========================================================================
+      const subTabArithmetic = document.getElementById('sub-tab-arithmetic');
+      const subTabMultiplication = document.getElementById('sub-tab-multiplication');
+      const panelArithmeticTips = document.getElementById('panel-arithmetic-tips');
+      const panelMultiplicationTips = document.getElementById('panel-multiplication-tips');
+
+      subTabArithmetic.addEventListener('click', () => {
+        subTabArithmetic.classList.add('active');
+        subTabMultiplication.classList.remove('active');
+        panelArithmeticTips.classList.add('active');
+        panelArithmeticTips.style.display = 'flex';
+        panelMultiplicationTips.classList.remove('active');
+        panelMultiplicationTips.style.display = 'none';
+      });
+
+      subTabMultiplication.addEventListener('click', () => {
+        subTabMultiplication.classList.add('active');
+        subTabArithmetic.classList.remove('active');
+        panelMultiplicationTips.classList.add('active');
+        panelMultiplicationTips.style.display = 'flex';
+        panelArithmeticTips.classList.remove('active');
+        panelArithmeticTips.style.display = 'none';
       });
 
       // ==========================================================================
